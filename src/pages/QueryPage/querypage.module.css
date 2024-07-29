@@ -1,0 +1,40 @@
+.query_page_main{
+  margin: 40px;
+  position: fixed;
+    z-index: 10;
+    overflow: auto;
+    width: 92%;
+    background: #ffffff;
+}
+.query_page_main_active{
+    border: 1px solid black;
+    border-radius: 20px;
+    margin: 40px;
+    border-color: #007bff;
+    position: fixed;
+    z-index: 10;
+    overflow: auto;
+    width: 92%;
+    background: #fbfafa;
+    /* background: #f6f7f7; */
+    
+}
+.suggestionContainer{
+    display: flex;
+    margin: 5px 15px;
+    justify-content: space-between;
+}
+.all_charts_conatiners{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding-top: 150px;
+}
+
+.recent_sample_suggestion_container{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 10px;
+    width: 61%;
+}
+

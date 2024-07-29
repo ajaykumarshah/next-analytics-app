@@ -1,0 +1,54 @@
+
+.maincontainer{
+    /* margin: 40px; */
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    margin-top: 6px;
+    margin: 0px;
+}
+.textArea{
+    padding:"5px 4px 0 14px";
+    resize: none;
+    /* background-color: transparent; */
+    /* border: none; */
+    margin: 0;
+   
+    color: rgba(0, 0, 0, .87);
+    word-wrap: break-word;
+    outline: none;
+    display: flex;
+    font: 16px arial, sans-serif;
+    line-height: 22px;
+    margin-bottom: 8px;
+
+    max-height: 50px;
+    padding: 10px; /* Adjust padding as needed */
+    border: 1px solid #ddd; /* Border color */
+    border-radius: 20px; /* Border radius to make it rounded */
+    outline: none; /* Remove default outline */
+}
+
+.textAreaFocused{
+    
+    resize: none;
+    /* background-color: transparent; */
+    /* border: none; */
+    margin: 0;
+   
+    color: rgba(0, 0, 0, .87);
+    word-wrap: break-word;
+    outline: none;
+    display: flex;
+    font: 16px arial, sans-serif;
+    line-height: 22px;
+    padding: 10px; /* Adjust padding as needed */
+    border: 1px solid #ddd; 
+    border-bottom: none;
+    border-radius: 20px; 
+    outline: none; /* Remove default outline */
+    margin: 0px;
+    border: none;
+    border-bottom: none;
+    max-height: 50px;
+}

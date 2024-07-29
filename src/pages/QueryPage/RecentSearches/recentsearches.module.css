@@ -1,0 +1,26 @@
+.suggestionDiv{
+    display: flex;
+    padding: 7px 5px;
+}
+.suggestionDiv:hover{
+    background-color: #cde5ff;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 8px 5px;
+ 
+}
+.suggestionDiv:hover .suggestionDelete{
+    display: block;
+}
+.suggestionText{
+    font-size: 16px;
+    color: #007bff;
+    flex: auto;
+}
+.suggestionIcon{
+    margin-right: 10px;
+}
+.suggestionDelete{
+    color: #071523;
+    display: none;
+}

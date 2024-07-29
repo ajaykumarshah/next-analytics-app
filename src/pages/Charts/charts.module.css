@@ -1,0 +1,9 @@
+.chart_container{
+    width: 90%;
+    padding: 10px;
+    border: 5px solid #ebebeb;
+    border-radius: 10px;
+    border-top: 20px solid #ebebeb;
+    margin-left: 50px;
+    /* margin-bottom: 50px; */
+}
