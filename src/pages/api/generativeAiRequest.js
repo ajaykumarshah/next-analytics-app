@@ -127,7 +127,8 @@ function getPrompt(keywords, calledCase, query, documentId) {
                    1. use this as documentId :${documentId} to crete query.
                    2. You can get the column name and data type from above mentioned JSON.
                    3. follow the below pattern of response.
-                   4. Generate the aggregation where the group value should be always val
+                   4. Generate the aggregation where the group value should be always val.
+                   5. Cross check generated query so that mongodb not throw error in Aggregation Pipeline.
 
                 Note: Cross check generated query so that mongodb not throw error in Aggregation Pipeline.
                   
