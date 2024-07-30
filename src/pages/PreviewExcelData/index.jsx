@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import getDefaultSampleExcelFromDB from '../api/getDefaultSampleExcelFromDB';
 import withReduxProvider from '../ReduxStoreProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '@/utils/loader';
+import { Loader } from '@/utils/Loader';
 import TableData from './components/TableData';
 import TableDataWrapper from './components/TableDataWrapper';
 
