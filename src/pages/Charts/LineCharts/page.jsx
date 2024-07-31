@@ -12,6 +12,15 @@ const LineChart = ({ dd:data=[],type="line" ,dataAnalysing,typedQuery}) => {
     title: {
       text: typedQuery
     },
+    credits:{
+      enabled:false
+    },
+    plotOptions: {
+      column: {
+        groupPadding: 10,
+        pointPadding :10
+      }
+    },
     xAxis: calculate_X_Axis({type,data}),
     yAxis: calculate_Y_Axis({type,data}),
     plotOptions: calculate_Plot_Options({type,data}),

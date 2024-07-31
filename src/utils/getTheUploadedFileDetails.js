@@ -4,7 +4,7 @@ import { getDataType } from './convertJSONDataIntoDocumnet';
 export const getTheUploadedFileDetails = {
 
     getTheExcelFileDetails: function ({ file,callback }) {
-        const reader = new window.FileReader();
+        const reader = new FileReader();
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });

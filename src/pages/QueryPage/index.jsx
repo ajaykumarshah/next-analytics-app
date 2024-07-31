@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import QueryTextArea from "./QueryTextArea";
 import RecentSearches from "./RecentSearches";
 import SampleSearches from "./SampleSearches";
@@ -14,6 +14,7 @@ import { deleteExcelFromMongo } from "../api/deleteExcelFromMongo";
 import { Divider } from "antd";
 import calculateSuggestionQueries from "@/utils/calculateSuggestionQueries";
 import ChatComponent from "../ChatComponent";
+import { generativeAiRequest } from "../api/generativeAiRequest";
 const QueryPage = () => {
 
     const [searchBoxOnFocus, setSearchBoxOnFocus] = useState(false);
@@ -21,6 +22,8 @@ const QueryPage = () => {
     const [dd, setDd] = useState([]);
     const [recentQueries,setRecentQueries]=useState([])
     const [dataAnalysing,setDataAnalysing]=useState(false)
+    const [insightsDataObj,setInsightsData]=useState("")
+
     const {sampleQueries = [],keywordsOfExcel,manualySelectedExcelDocumnetId} = useSelector((state) => {
         return {
             ...state.defaultQueries,
@@ -36,6 +39,9 @@ const QueryPage = () => {
         setSearchBoxOnFocus(false);
         const data = await getDataFromSampleSuggestion(suggestion,manualySelectedExcelDocumnetId,keywordsOfExcel);
         setDd(data);
+        const insightsOfData=await generativeAiRequest.getInsightsOfData(data)
+        setInsightsData(insightsOfData);
+        console.log("00000000000000000",insightsOfData);
         setRecentQueries([...new Set([suggestion,...recentQueries])].slice(0,11))
         setDataAnalysing(false)
     };
@@ -44,8 +50,13 @@ const QueryPage = () => {
         setSearchBoxOnFocus(false);
         const data = await getDataFromSampleSuggestion(query,manualySelectedExcelDocumnetId,keywordsOfExcel);
         setDd(data);
+        const insightsOfData=await generativeAiRequest.getInsightsOfData(data)
+        console.log("222222222222222222",insightsOfData);
+
+        setInsightsData(insightsOfData);
         setRecentQueries([...new Set([query,...recentQueries])].slice(0,11))
         setDataAnalysing(false)
+        setTypedQuery(query);
     };
     const handleClickOnRecentSearches=(query)=>{
        if(sampleQueries.includes(query)){
@@ -54,8 +65,20 @@ const QueryPage = () => {
        }
        searchQueryClicked(query)
     }
+
+    const insights=useMemo(()=>{
+        const isHTMLContains=insightsDataObj.includes("div") || insightsDataObj.includes("p")
+        if(isHTMLContains && dd.length){
+            return insightsDataObj.slice(insightsDataObj.indexOf("<div"),insightsDataObj.lastIndexOf("</div")+6).replaceAll("\n","")
+        }
+        if(!dd.length){
+            return "<span>No Insights Available</span>"
+        }
+        return "<span>Some technical issues.</span>"
+    },[insightsDataObj])
     
-    
+
+
    
     return (
         <>
@@ -94,7 +117,15 @@ const QueryPage = () => {
             </div>
             <div><ChatComponent /></div>
             <div className={styles.all_charts_conatiners}>
-                <LineChart typedQuery={typedQuery} dataAnalysing={dataAnalysing} dd={dd} type={"column"} />
+                <div style={{width:"70%"}}>
+                  <LineChart typedQuery={typedQuery} dataAnalysing={dataAnalysing} dd={dd} type={"column"} />
+                </div>
+                <div className={styles.insights_container}  style={{width:"30%"}} dangerouslySetInnerHTML={{__html: insights}}>
+                     
+                </div>
+                <div>
+                  {/* {getIn()} */}
+                </div>
             </div>
         </>
     );

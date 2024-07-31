@@ -1,5 +1,5 @@
 const XLSX = require('xlsx');
-const reader = new window.FileReader();
+const reader = new FileReader();
 const validator = require('validator');
 
 export const xlsxToJSONConverter = ({ file, callback, checkedSheet = "", checkedColumns = [] }) => {

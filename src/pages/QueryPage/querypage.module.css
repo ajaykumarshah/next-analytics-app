@@ -26,8 +26,9 @@
 }
 .all_charts_conatiners{
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
+  /* flex-wrap: wrap;
+  flex-direction: column; */
+  gap: 15px;
   padding-top: 150px;
 }
 
@@ -38,3 +39,11 @@
     width: 61%;
 }
 
+.insights_container{
+  overflow: auto;
+  padding: 15px;
+  max-height: 415px;
+  border: 1px solid whitesmoke;
+  border-radius: 4px;
+  background: whitesmoke;
+}

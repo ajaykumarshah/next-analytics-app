@@ -52,3 +52,11 @@
     border-bottom: none;
     max-height: 50px;
 }
+
+.insights_container{
+    overflow: auto;
+    padding: 15px;
+    max-height: 415px;
+    border: 1px solid whitesmoke;
+    border-radius: 4px;
+}

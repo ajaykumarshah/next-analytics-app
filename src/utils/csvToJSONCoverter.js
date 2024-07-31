@@ -3,7 +3,7 @@
 
 const validator=require("validator")
 export  const csvToJSONCoverter=({file,callback})=>{
-    const reader = new window.FileReader();
+    const reader = new FileReader();
     reader.onload = e => {
       const lines = e.target.result.split('\n');
       const headers = lines[0].split(',');
@@ -26,3 +26,13 @@ export  const csvToJSONCoverter=({file,callback})=>{
   
   reader.readAsText(file);
 }
+
+
+
+
+
+
+
+
+
+

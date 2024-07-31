@@ -33,7 +33,9 @@ const calculate_X_Axis=({type,data=[]})=>{
                 categories: data?.map(obj=>typeof obj._id=="object"?Object.values(obj._id || {})[0]:obj._id),
                 labels:{
                     overflow:"justify",
-                }
+                },
+                margin:20,
+                
               }
         case "cylinder":
             return {
@@ -86,16 +88,21 @@ const calculate_Plot_Options = ({ type, data }) => {
 const calculate_Chart_Fields=({type,data})=>{
     switch (type) {
         case "column":
-            return {type,scrollablePlotArea: {
-                minWidth: 700,
-                scrollPositionX: 1,
-                marginRight: 100
-              }}; 
+            return {
+                type,
+                scrollablePlotArea: {
+                    maxWidth: 700,
+                    scrollPositionX: 1,
+                    marginRight: 100
+              }
+            }; 
         case "line":
-            return {type,scrollablePlotArea: {
-                minWidth: 700,
-                scrollPositionX: 1,
-                marginRight: 100
+            return {
+                type,
+                scrollablePlotArea: {
+                    minWidth: 700,
+                    scrollPositionX: 1,
+                    marginRight: 100
               }};    
             
         case "cylinder":
