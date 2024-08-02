@@ -17,11 +17,17 @@ const LineChart = ({ dd:data=[],type="line" ,dataAnalysing,typedQuery}) => {
     },
     plotOptions: {
       column: {
-        groupPadding: 10,
-        pointPadding :10
+        groupPadding: 0.2,
+        pointPadding :0.2
       }
     },
     xAxis: calculate_X_Axis({type,data}),
+    // xAxis: [{
+    //   max: 6,
+    //   scrollbar: {
+    //     enabled: true,
+    //   },
+    // }],
     yAxis: calculate_Y_Axis({type,data}),
     plotOptions: calculate_Plot_Options({type,data}),
     series: [{
@@ -33,7 +39,7 @@ const LineChart = ({ dd:data=[],type="line" ,dataAnalysing,typedQuery}) => {
   return (
     <div className={styles.chart_container}>
       {
-        dataAnalysing?<Skeleton active paragraph={{rows:5}} />:(<HighchartsReact
+        dataAnalysing?<Skeleton active paragraph={{rows:11}} />:(<HighchartsReact
           highcharts={Highcharts}
           options={options}
         />)

@@ -12,7 +12,11 @@ const API_KEY="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"
 
 const generativeAiRequest = {
   getSuggestionQueries: async function (keywords = tempKeys) {
-    const response = await makeRequestWithPrompt(getPrompt({keywords, calledCase:"SUGGESTIONS_GENERATIONS"}));
+    const additionalParameters={
+      temperature: 1,
+      
+    }
+    const response = await makeRequestWithPrompt(getPrompt({keywords, calledCase:"SUGGESTIONS_GENERATIONS"}),additionalParameters);
     // console.log("this is suggestion", typeof response, response);
     return response
   },
@@ -21,7 +25,8 @@ const generativeAiRequest = {
       temperature: 0.2,
       stream: false,
       response_format: { "type": "json_object"  },
-      max_tokens: 250,
+      max_tokens: 500,
+      model:"llama3-70b-8192"
     }
     const response = await makeRequestWithPrompt(getPrompt({keywords, calledCase:"SEARCHED_QUERY_TO_AGGREGATION_QUERY", query, documentId}),additionalParameters, true)
     // console.log(query, "this is query");
@@ -42,8 +47,10 @@ const generativeAiRequest = {
   },
   getInsightsOfData: async function (data) {
     const additionalParameters={
-      temperature: 1,
-      model:"llama-3.1-70b-versatile"
+      temperature: 0.2,
+      model:"llama3-70b-8192"
+      // model:"llama-3.1-70b-versatile"
+      // model:"llama-3.1-8b-instant"
       // stream: false,
       // response_format: { "type": "json_object"  },
     }
@@ -84,6 +91,11 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
   switch (calledCase) {
     
     case "SUGGESTIONS_GENERATIONS":
+      const firstObj={
+        Sales:"number",
+        State:"string",
+        Region:"string"
+       }
 
       prompt = `Here is the below pairs of column name and value data type of ${JSON.stringify(keywords)}
                based on above data.
@@ -91,13 +103,24 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                 1. Use the following JSON format to return you response:
                {{
                  "generated":<trus/false>,
-                 "kpis":<["Profit by Sales","Sales by Region"]>,
+                 "kpis":<[]>,
                  "error":<true/false>
                }}
                 2. Need relevant response, don"t responsd ungrounded data.
                 3. Atleast count of 20 kpis should be there.
                 4. Don"t use any description on response.
                 5. Response should be JSON object.
+                6. Generate some complex and Important KPIS based on above provided the below json data.
+                7. You can take Idea from below example , what are kpis but don't copy same pattern.
+                8. Make sure don't create kpi from using same same type column data.
+                9  Atleast 1 number column and 1 string column used on KPI. 
+                 
+              KPIS Examples :
+              
+              ["What is Total Sales by State","Top 5 Cities By Sales","Total Sales by Region and State where Total Sales of State is greater than 5000"]
+              
+              it will be totally based upon proveded json
+              
             `
       arr[0]["content"] = "You are an expert Bussiness Analyst of Bussiness Intelligence tool"
       arr[1]["content"] = prompt
@@ -117,7 +140,8 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                    2. You can get the column name and data type from above mentioned JSON.
                    3. follow the below pattern of response.
                    4. Generate the aggregation where the group value should be always val.
-                   5. Cross check generated query so that mongodb not throw error in Aggregation Pipeline.
+                   5. Before adding aggregation pipline check their data type present in columns from above json.
+                   6. Cross check generated query so that mongodb not throw error in Aggregation Pipeline.
 
                 Note: Cross check generated query so that mongodb not throw error in Aggregation Pipeline.
                   
@@ -133,8 +157,8 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                                 "_id": "$table.Profit",
                                 "val": { "$sum": "$table.Sales" }
                                 },
-                            },
-                            { "$sort" : { "val" : -1 } },
+                            }
+                            
                         ],
                         "queryGenerated": true
                     }
@@ -151,7 +175,7 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                                 "val": { "$sum": "$table.Profit" }
                                 },
                             },
-                            { "$sort" : { "val" : -1 } },
+                            
                         ],
                         "queryGenerated": true
                     }
@@ -164,11 +188,10 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                             {"$match":{"_id":"documentId"}},
                             { "$unwind": "$table" },
                             {"$group": {
-                                "_id": "$table.Ship Mode",
+                                "_id": "$table.Ship Date",
                                 "val": { "$sum": "$table.Profit" }
                                 },
-                            },
-                            { "$sort" : { "val" : -1 } },
+                            }
                         ],
                         "queryGenerated": true
                     }
@@ -258,7 +281,7 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
 
                     </div>'
             
-            2. Question: create the insights from below data in only HTML.
+            1. Question: create the insights from below data in only HTML.
                 
                   array=  [{"_id":"Corporate","val":768426.9094254},{"_id":"Home Office","val":477160.34582492},{"_id":"Consumer","val":359919.3346686},{"_id":"Corporate","val":768426.9094254},{"_id":"Home Office","val":477160.34582492},{"_id":"Consumer","val":359919.3346686},{"_id":"Home Office","val":477160.34582492},{"_id":"Consumer","val":359919.3346686},{"_id":"Consumer","val":359919.3346686},{"_id":"Small Business","val":179908.06909575}]
                  
@@ -272,6 +295,13 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                           <li><strong style="color: darkblue;">Lowest Value:</strong> 
                             <ul>
                               <li>The lowest value is in the <strong style="color: darkgreen;">Small Business</strong> category with an amount of <strong style="color: darkred;">179,908.07</strong>.</li>
+                            </ul>
+                          </li>
+                          <li><strong style="color: darkblue;">Insights:</strong>
+                            <ul>
+                              <li><strong style="color: darkgreen;">Corporate</strong> category consistently shows the highest values, indicating a strong performance in this sector.</li>
+                              <li><strong style="color: darkgreen;">Home Office</strong> and <strong style="color: darkgreen;">Consumer</strong> categories have multiple entries with moderate values, showing significant contributions to the overall total.</li>
+                              <li><strong style="color: darkgreen;">Small Business</strong> has the lowest value and the fewest entries, suggesting a smaller impact in comparison to other categories.</li>
                             </ul>
                           </li>
                           <li><strong style="color: darkblue;">Category Breakdown:</strong>
@@ -322,13 +352,7 @@ function getPrompt({keywords, calledCase, query, documentId,data=[]}) {
                               </li>
                             </ul>
                           </li>
-                          <li><strong style="color: darkblue;">Insights:</strong>
-                            <ul>
-                              <li><strong style="color: darkgreen;">Corporate</strong> category consistently shows the highest values, indicating a strong performance in this sector.</li>
-                              <li><strong style="color: darkgreen;">Home Office</strong> and <strong style="color: darkgreen;">Consumer</strong> categories have multiple entries with moderate values, showing significant contributions to the overall total.</li>
-                              <li><strong style="color: darkgreen;">Small Business</strong> has the lowest value and the fewest entries, suggesting a smaller impact in comparison to other categories.</li>
-                            </ul>
-                          </li>
+                          
                         </ol>
 
                       </div> 

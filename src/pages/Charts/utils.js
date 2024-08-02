@@ -31,10 +31,14 @@ const calculate_X_Axis=({type,data=[]})=>{
         case "line":
             return {
                 categories: data?.map(obj=>typeof obj._id=="object"?Object.values(obj._id || {})[0]:obj._id),
-                labels:{
-                    overflow:"justify",
-                },
-                margin:20,
+                // labels:{
+                //     overflow:"justify",
+                // },
+                // margin:20,
+                // max:6,
+                scrollbar: {
+                         enabled: true,
+                }
                 
               }
         case "cylinder":
@@ -90,11 +94,11 @@ const calculate_Chart_Fields=({type,data})=>{
         case "column":
             return {
                 type,
-                scrollablePlotArea: {
-                    maxWidth: 700,
-                    scrollPositionX: 1,
-                    marginRight: 100
-              }
+            //     scrollablePlotArea: {
+            //         maxWidth: 700,
+            //         scrollPositionX: 1,
+            //         marginRight: 100
+            //   }
             }; 
         case "line":
             return {
