@@ -121,7 +121,7 @@ const RowColumnsSelection = forwardRef((props,ref) => {
         <div
             className="ag-theme-quartz"
             style={{
-                height: "420px",
+                height: "350px",
                 width: "100%",
             }}
         >

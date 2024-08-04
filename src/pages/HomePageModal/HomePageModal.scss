@@ -17,6 +17,16 @@
     align-items: center;
 }
 
+
+.home-page-modal{
+    .ant-modal-content{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+}
+
 .ag-theme-quartz{
 
     .ag-center-cols-container{
