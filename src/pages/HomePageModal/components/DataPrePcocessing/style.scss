@@ -1,0 +1,36 @@
+#data-processing-container{
+
+    .ag-header{
+
+        height: 50px !important;
+    }
+
+    .ag-cell{
+        border-right: 1px solid #ccc;
+    }
+
+    // .ag-pinned-left-cols-container{
+    //     .ag-row-even{
+    //         height: 35px !important;
+    //     }
+    // }
+    // .ag-row-odd{
+    //     height: 35px !important;
+    // }
+
+
+    .ag-header-row{
+        height: 100% !important;
+
+        .ag-header-cell{
+            height: 100% !important;
+        }
+    }
+
+    .header-container{
+        display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px
+    }
+}
