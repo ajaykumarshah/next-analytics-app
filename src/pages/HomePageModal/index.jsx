@@ -13,8 +13,8 @@ import { addManualySelectedExcelDocumnetId, addSheetsConfig } from "@/redux/redu
 import TableSheetConfig from "./components/TableSheetConfig";
 import { getTheUploadedFileDetails } from "@/utils/getTheUploadedFileDetails";
 import { csvToJSONCoverter } from "@/utils/csvToJSONCoverter";
-import { xlsxToJSONConverter } from "@/utils/xlsxToJSONConverter";
 import { useRouter } from "next/navigation";
+
 
 
 const MODAL_TITLE = "Select excel sheet and columns"
@@ -25,7 +25,7 @@ const HomePageModal = () => {
     const [uploadedFileObj, setUploadedFile] = useState({ uploaded: false, file: null, jsonData: [], details: {}, columnWithStasticsDetails: {}, columnWithStasticsDetailsInProg: true })
     const [modalStep, setModalStep] = useState("upload")
     const [modalButtonsObj, setModalButtonsObj] = useState({ okBTN: { loading: false } })
-
+    const [clientSideRendering,setClientSideRendering]=useState(false)
     const ref = useRef(null)
 
     const router = useRouter()
@@ -48,6 +48,8 @@ const HomePageModal = () => {
                 }
             })
         }
+        setClientSideRendering(true)
+       
     }, [uploadedFileObj.uploaded])
 
     const showModalTitle = modalStep == "tableConfig"
@@ -80,6 +82,7 @@ const HomePageModal = () => {
     }
 
     const handleModalStep = useCallback(async () => {
+        setModalStep(modalSteps[modalSteps.indexOf(modalStep) + 1])
         if (modalStep == "dataPreprocessing") {
             handleProceedClick()
             return
@@ -97,7 +100,7 @@ const HomePageModal = () => {
                     }
                 }
                 dispatch(addSheetsConfig({ activeSheet: checkedSheet, checkedColumns }))
-                setModalButtonsObj({ ...modalButtonsObj, okBTN: { ...modalButtonsObj.okBTN, loading: true } })
+                setModalButtonsObj({ ...modalButtonsObj, okBTN: { ...modalButtonsObj.okBTN, loading: false } })
                 const file = uploadedFileObj.file
                 const fileName = file.name;
                 if (fileName.endsWith('.csv')) {
@@ -106,13 +109,24 @@ const HomePageModal = () => {
 
                 }
                 else if (fileName.endsWith('.xlsx')) {
-                    xlsxToJSONConverter({ file, callback: ({ jsonData, columnWithStasticsDetails }) => setUploadedFile({ ...uploadedFileObj, jsonData, columnWithStasticsDetails, columnWithStasticsDetailsInProg: false }), checkedSheet, checkedColumns })
+                    // xlsxToJSONConverter({ file, callback: ({ jsonData, columnWithStasticsDetails }) => setUploadedFile({ ...uploadedFileObj, jsonData, columnWithStasticsDetails, columnWithStasticsDetailsInProg: false }), checkedSheet, checkedColumns })
+
+                    const formData = new FormData();
+                    formData.append('file', file);   
+                    formData.append("checkedSheet",checkedSheet)
+                    formData.append("checkedColumns",JSON.stringify(checkedColumns))
+                    const response = await fetch('/api/xlsxToJsonConverter', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    const data = await response.json(); 
+                    setUploadedFile({ ...uploadedFileObj, ...data.data, columnWithStasticsDetailsInProg: false })
 
                 }
 
             }
         }
-        setModalStep(modalSteps[modalSteps.indexOf(modalStep) + 1])
+        
 
     }, [modalStep])
 
@@ -122,9 +136,10 @@ const HomePageModal = () => {
         dataPreprocessing: { component: DataPrePcocessing, props: { uploadedFileObj, checkedColumns, activeSheet } }
     }
     const { component: ComponentToRenderInModal, props: componentToRenderInModalProps } = componentsObj[modalStep]
-
+     
     return (
-        <Modal
+        <>
+        {clientSideRendering?<Modal
             title={getModalTitle(modalStep)}
             style={{ top: 70 }} 
             // {...(showModalTitle) ? { title: MODAL_TITLE } : {}}
@@ -140,7 +155,8 @@ const HomePageModal = () => {
             <div className="modal-div-main-container">
                 <ComponentToRenderInModal {...componentToRenderInModalProps} />
             </div>
-        </Modal>
+        </Modal>:null}
+        </>
     );
 };
 
@@ -149,9 +165,7 @@ const HomePageModal = () => {
 const getModalTitle = activeModalStep => {
     const stepsObj = { upload: 0, tableConfig: 1, dataPreprocessing: 2 }
     const index=stepsObj[activeModalStep]
-    const IN_PROGRESS="In Progress"
-    const FINISHED="Finished"
-    const WAITING="Waiting"
+    
     return <Steps
         size="small"
         current={index}

@@ -66,3 +66,12 @@ You can search queries like :
 3.what are my sales by region where sales is greater than 2000.
 4.what are top 5 cities with highest sells 
 `;
+
+
+
+export const dataPreprocessingNotes=[
+  "Review and Adjust: Continuously review and adjust your KPIs to reflect changes in business goals and external factors.",
+  "Review and Adjust: Continuously review and adjust your KPIs to reflect changes in business goals and external factors.",
+  "Review and Adjust: Continuously review and adjust your KPIs to reflect changes in business goals and external factors."
+
+]

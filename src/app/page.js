@@ -15,7 +15,7 @@ export default function Home() {
         {/* <Image src={homeImage} height={852} width={1800} alt="g" /> */}
       </div>
       
-      <div>
+      <div >
         <HomePageModal />
       </div>
     </>
