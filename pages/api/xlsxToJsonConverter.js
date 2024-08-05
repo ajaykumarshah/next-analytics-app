@@ -34,11 +34,13 @@ export default async function handler(req, res) {
                         res.end('Error reading the file');
                         return;
                     }
+                    console.log(res,"this is res");
+                    res.socket?.server?.io?.emit('message111', "from socket first message");
                     const obj = xlsxToJSONConverter({ data,checkedColumns,checkedSheet })
 
                     
                     res.status(200).json({ success: true, data: obj });
-                    console.log(obj);
+                    
                 })
             })
 

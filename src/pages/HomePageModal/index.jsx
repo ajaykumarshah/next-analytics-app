@@ -14,6 +14,7 @@ import TableSheetConfig from "./components/TableSheetConfig";
 import { getTheUploadedFileDetails } from "@/utils/getTheUploadedFileDetails";
 import { csvToJSONCoverter } from "@/utils/csvToJSONCoverter";
 import { useRouter } from "next/navigation";
+import useSocket from "@/customHooks/useSocket";
 
 
 
@@ -27,8 +28,9 @@ const HomePageModal = () => {
     const [modalButtonsObj, setModalButtonsObj] = useState({ okBTN: { loading: false } })
     const [clientSideRendering,setClientSideRendering]=useState(false)
     const ref = useRef(null)
-
+    const dataPreProcessingComRef=useRef(null)
     const router = useRouter()
+
     const { manualySelectedExcelDocumnetId, uploadedDataDetails: { checkedColumns = [], activeSheet } } = useSelector(state => (
         {
             manualySelectedExcelDocumnetId: state.excelData.manualySelectedExcelDocumnetId,
@@ -51,6 +53,7 @@ const HomePageModal = () => {
         setClientSideRendering(true)
        
     }, [uploadedFileObj.uploaded])
+
 
     const showModalTitle = modalStep == "tableConfig"
     const showModalFooter = modalStep == "tableConfig"
@@ -133,7 +136,7 @@ const HomePageModal = () => {
     const componentsObj = {
         upload: { component: ModalFirstStep, props: { setUploadedFile, setModalStep } },
         tableConfig: { component: TableSheetConfig, props: { sheetsData: uploadedFileObj.details, handleProceedClick, ref } },
-        dataPreprocessing: { component: DataPrePcocessing, props: { uploadedFileObj, checkedColumns, activeSheet } }
+        dataPreprocessing: { component: DataPrePcocessing, props: { uploadedFileObj, checkedColumns, activeSheet,dataPreProcessingComRef } }
     }
     const { component: ComponentToRenderInModal, props: componentToRenderInModalProps } = componentsObj[modalStep]
      

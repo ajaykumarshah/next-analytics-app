@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { AgGridReact } from "ag-grid-react"; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-balham.css"; // Optional Theme applied to the Data Grid
@@ -29,10 +29,10 @@ const RowCellRendrer = ({
     checkedHeader,
     setRowsChecked,
     columnWithStasticsDetailsInProg,
-    columnWithStasticsDetails
+    columnWithStasticsDetails,
+    setDataProcessingConfig,
+    dataProcessingConfig
 }) => {
-
-
 
 
     const colId = props.colDef.detailsOfColumn.field || props.column.colId
@@ -40,9 +40,7 @@ const RowCellRendrer = ({
     let contentToReturn = ""
 
 
-    const handleCheckBoxchanges = () => {
-
-    }
+    
 
     if (colId == "fillWith") {
         contentToReturn = props.data.item.content
@@ -58,18 +56,29 @@ const RowCellRendrer = ({
         if (occuredCountNeedFor.includes(key) && val) {
             occurance = columnWithStasticsDetails?.[mappedOccurance[key]]?.[colId]?.[val] || columnWithStasticsDetails?.[mappedOccurance[key]]?.[colId]
         }
-        const finalOccurance = occurance ? ` (${occurance})` : ""
 
+        const finalOccurance = occurance ? ` (${occurance})` : ""
+        const handleCheckBoxchanges = () => {
+             setDataProcessingConfig({...dataProcessingConfig,[colId]:(val+"_"+key)})
+        }
         const contemtToRender = String(val).slice(0, 10) + (String(val).length > 9 ? "..." : "")
-        contentToReturn = !invalidData.includes(val) ? <Checkbox checked={false} onChange={handleCheckBoxchanges}><Tooltip title={val + finalOccurance} >  <span>{contemtToRender + finalOccurance}</span> </Tooltip></Checkbox> : "_______"
+        contentToReturn = !invalidData.includes(val) ? <Checkbox checked={dataProcessingConfig[colId]==(val+"_"+key)} onChange={handleCheckBoxchanges}><Tooltip title={val + finalOccurance} >  <span>{contemtToRender + finalOccurance}</span> </Tooltip></Checkbox> : "_______"
     }
-    console.log(colId, contentToReturn);
+    
     return <>{columnWithStasticsDetailsInProg && colId != "fillWith" ? <Skeleton active paragraph={{ rows: 1 }} /> : contentToReturn}</>
 };
 
 
-const DataPrePcocessing = ({ uploadedFileObj, checkedColumns, activeSheet }) => {
+const DataPrePcocessing = forwardRef((props,dataPreProcessingComRef) => {
 
+    const { uploadedFileObj, checkedColumns, activeSheet }=props
+    const [dataProcessingConfig,setDataProcessingConfig]=useState({})
+
+    useImperativeHandle(dataPreProcessingComRef, () => ({
+        getdataPreProcessingComState() {
+          return {dataProcessingConfig};
+        }
+    }));
 
     const { details: sheetsData, columnWithStasticsDetails, columnWithStasticsDetailsInProg } = uploadedFileObj
     const cold = sheetsData.filter(obj => obj.sheetName === activeSheet)[0].columns.filter(obj => checkedColumns.includes(obj.name))
@@ -90,6 +99,8 @@ const DataPrePcocessing = ({ uploadedFileObj, checkedColumns, activeSheet }) => 
                 props={cellProps}
                 columnWithStasticsDetailsInProg={columnWithStasticsDetailsInProg}
                 columnWithStasticsDetails={columnWithStasticsDetails}
+                setDataProcessingConfig={setDataProcessingConfig}
+                dataProcessingConfig={dataProcessingConfig}
             />
         ),
         flex: 1,
@@ -117,7 +128,7 @@ const DataPrePcocessing = ({ uploadedFileObj, checkedColumns, activeSheet }) => 
                     </ul>
                 </div>
     </div>
-}
+})
 
 
 const getRowData = (colArrWithDataTypes = []) => {
