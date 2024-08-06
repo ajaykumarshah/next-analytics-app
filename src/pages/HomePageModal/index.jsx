@@ -56,11 +56,14 @@ const HomePageModal = () => {
 
 
     const showModalTitle = modalStep == "tableConfig"
-    const showModalFooter = modalStep == "tableConfig"
+    const showModalFooter = (modalStep == "tableConfig" || modalStep=="dataPreprocessing")
+    const showSkipBTNInFooter=modalStep=="dataPreprocessing"
 
 
-    const onFileConvertedIntoJSON = async (json) => {
-        const documentObj = convertJSONDataIntoDocumnet(json)
+    const handleProceedOnDataPreStep = async () => {
+        const {dataProcessingConfig}=dataPreProcessingComRef.current?.getdataPreProcessingComState() || {}
+        
+        const documentObj = convertJSONDataIntoDocumnet({...uploadedFileObj,dataProcessingConfig,activeSheet,checkedColumns})
         const modifiedDoc = { ...documentObj, table: documentObj.table.slice(0, 500) }
         const documentIdObj = await addManualySelectedExcelIntoMongo({ document: modifiedDoc })
         const documentId = JSON.parse(documentIdObj).id
@@ -81,7 +84,7 @@ const HomePageModal = () => {
         let checkedSheet;
         let checkedColumns
 
-
+        
     }
 
     const handleModalStep = useCallback(async () => {
@@ -133,6 +136,11 @@ const HomePageModal = () => {
 
     }, [modalStep])
 
+
+    const handleSkpiClick=useCallback(()=>{
+
+    },[])
+
     const componentsObj = {
         upload: { component: ModalFirstStep, props: { setUploadedFile, setModalStep } },
         tableConfig: { component: TableSheetConfig, props: { sheetsData: uploadedFileObj.details, handleProceedClick, ref } },
@@ -146,12 +154,15 @@ const HomePageModal = () => {
             title={getModalTitle(modalStep)}
             style={{ top: 70 }} 
             // {...(showModalTitle) ? { title: MODAL_TITLE } : {}}
-            open={true}  {...(!showModalFooter) ? { footer: null } : {}}
-            okText="Proceed" cancelButtonProps={{ style: { display: 'none' } }}
+            open={true}  
+            {...(!showModalFooter) ? { footer: null } : {}}
+            okText="Proceed" 
+            cancelButtonProps={{ style: showSkipBTNInFooter?{ display: 'none' }:{},title:"Skip" }}
             okButtonProps={{ title: "Proceed", loading: modalButtonsObj.okBTN.loading }}
             closable={false}
             width={1100}
             onOk={handleModalStep}
+            onCancel={handleSkpiClick}
             className="home-page-modal"
 
         >

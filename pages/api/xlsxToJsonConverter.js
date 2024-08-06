@@ -11,6 +11,7 @@ export const config = {
         bodyParser: false,
     },
 };
+
 export default async function handler(req, res) {
     try {
         console.log('Request method:', req.method);  // Log the request method
@@ -77,13 +78,15 @@ const xlsxToJSONConverter = ({ data, checkedColumns, checkedSheet }) => {
                     const cellAddress = XLSX.utils.encode_cell({ r: i, c: j });
                     const cell = worksheet[cellAddress];
                     const cellType = cell ? cell.t : null;
-
+                    
+                    let dateVal=null;
                     if (cellType === 'n' && (cell.z || cell.w) && !validator.isNumeric(cell.w)) {
                         // It's a date
                         const dateValue = XLSX.SSF.parse_date_code(cell.v);
                         if (dateValue) {
                             const formattedDate = new Date(Date.UTC(dateValue.y, dateValue.m - 1, dateValue.d));
-                            rowData[headers[j]] = formattedDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                            dateVal=formattedDate.toISOString().split('T')[0];
+                            rowData[headers[j]] = dateVal // Format as YYYY-MM-DD
                         } else {
                             rowData[headers[j]] = cell.v;
                         }
@@ -106,21 +109,21 @@ const xlsxToJSONConverter = ({ data, checkedColumns, checkedSheet }) => {
                     } else {
                         rowData[headers[j]] = row[j] || "";
                     }
-                    const keyValueInMaxOccured = columnWithStasticsDetails.maxOccured[headers[j]]?.[row[j]]
+                    const keyValueInMaxOccured = columnWithStasticsDetails.maxOccured[headers[j]]?.[ dateVal || row[j]]
                     if (keyValueInMaxOccured) {
                         // if the value is already present then the increase the counting of the key ocuurance
 
-                        columnWithStasticsDetails.maxOccured[headers[j]][row[j]] = keyValueInMaxOccured + 1
-
+                        columnWithStasticsDetails.maxOccured[headers[j]][ dateVal || row[j] ] = keyValueInMaxOccured + 1
+                       
                     }
                     else {
                         if (columnWithStasticsDetails.maxOccured[headers[j]]) {
 
-                            columnWithStasticsDetails.maxOccured[headers[j]] = { ...columnWithStasticsDetails.maxOccured[headers[j]], [row[j]]: 1 }
+                            columnWithStasticsDetails.maxOccured[headers[j]] = { ...columnWithStasticsDetails.maxOccured[headers[j]], [ dateVal || row[j] ] : 1 }
                         }
                         else {
                             columnWithStasticsDetails.maxOccured = { ...columnWithStasticsDetails.maxOccured, [headers[j]]: {} }
-                            columnWithStasticsDetails.maxOccured[headers[j]][row[j]] = 1
+                            columnWithStasticsDetails.maxOccured[headers[j]][ dateVal ||  row[j] ] = 1
 
                         }
                     }

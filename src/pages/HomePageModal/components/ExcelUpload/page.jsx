@@ -41,7 +41,7 @@ function ExcelUpload({setUploadedFile,setModalStep}) {
     <>
       <Upload
         multiple={false}
-        accept=".xlsx, .csv"
+        accept=".xlsx"
         beforeUpload={beforeUpload}
       >
         <div

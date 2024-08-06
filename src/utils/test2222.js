@@ -1,6 +1,5 @@
-"use server"
+const validator =require("validator")
 
-export const parseFormData = async(formData) => {
-   console.log(formData);
-};
-  
+console.log(validator.isDate("2015/03/01"));
+
+// src\utils\test2222.js

@@ -7,7 +7,7 @@ import "./style.scss"
 import { dataPreprocessingNotes } from '@/static/media/images/data/staticData';
 
 
-const tagColoresObj = { "string": "green", "number": "blue", "date": "cyan" }
+const tagColoresObj = { "string": "green", "number": "blue", "date": "purple" }
 const dataTypesObj = { "string": "text", "number": "number", "date": "date" }
 const invalidData = [undefined, null]
 

@@ -10,7 +10,7 @@ import { useState,useEffect } from "react";
       <Tag color="cyan">cyan</Tag>
       <Tag color="blue">blue</Tag> */}
 
-const tagColoresObj={"string":"green","number":"blue","date":"cyan"}   
+const tagColoresObj={"string":"green","number":"blue","date":"purple"}   
 const dataTypesObj={"string":"text","number":"number","date":"date"}   
 
 const CustomHeader = ({ checkedHeader, props, setCheckedHeader }) => {
